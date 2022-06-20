@@ -23,7 +23,7 @@ form = cgi.FieldStorage()
 #
 if "devicegroup" in form:
     devicegroup = form.getvalue('devicegroup')
-    url = librenms_host + '/api/v0/devicegroups'
+    url = f'{librenms_host}/api/v0/devicegroups'
     headers = {'X-Auth-Token': token}
     r = requests.get(url, headers = headers)
 
@@ -45,7 +45,7 @@ if "devicegroup" in form:
             #
             # Look up ID by group name
             #
-            for i in range(0, rows):
+            for i in range(rows):
                 group_name = str(data['groups'][i]['name'])
 
                 #
@@ -54,17 +54,14 @@ if "devicegroup" in form:
                 #
                 if group_name == devicegroup:
                     group_id = str(data['groups'][i]['id'])
-                    print ('Location: ' + librenms_host + '/devices/group=' + group_id + '\n')
+                    print(f'Location: {librenms_host}/devices/group={group_id}' + '\n')
                 else:
-                    print ('Location: ' + librenms_host + '/devices/' + '\n')
+                    print(f'Location: {librenms_host}/devices/' + '\n')
 
         except IndexError:
-            print ('Location: ' + librenms_host + '/devices/' + '\n')
+            print(f'Location: {librenms_host}/devices/' + '\n')
     else:
-        print ('Location: ' + librenms_host +'\n')
+        print(f'Location: {librenms_host}' + '\n')
 
-#
-# handle all other errors by just forwarding to the LibreNMS host
-#
 else:
-    print ('Location: ' + librenms_host +'\n')
+    print(f'Location: {librenms_host}' + '\n')

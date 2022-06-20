@@ -26,13 +26,14 @@ if "device" in form and "interface" in form:
     device = form.getvalue('device')
     interface = form.getvalue('interface')
 
-    for i in range(0,9):
-        device = device.replace(':' + str(i), '')
+    for i in range(9):
+        device = device.replace(f':{str(i)}', '')
 
     device = urllib.parse.quote(device, safe='')
     interface = urllib.parse.quote(interface, safe='')
 
-    url = librenms_host + '/api/v0/devices/' + device + '/ports/' + interface + '/port_bits?width=780&height=200&from=' + timefrom
+    url = f'{librenms_host}/api/v0/devices/{device}/ports/{interface}/port_bits?width=780&height=200&from={timefrom}'
+
     headers = {'X-Auth-Token': token}
     r = requests.get(url, headers = headers)
 
@@ -54,9 +55,6 @@ if "device" in form and "interface" in form:
         print ()
         print ('error')
 
-#
-# handle all other errors by printing out error
-#
 else:
     print ('Content-Type: text/html')
     print ()

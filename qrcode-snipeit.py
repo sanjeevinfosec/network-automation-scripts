@@ -23,7 +23,7 @@ form = cgi.FieldStorage()
 #
 if "tag" in form:
     tag = form.getvalue('tag')
-    url = snipeit_host + '/api/v1/hardware/bytag/'
+    url = f'{snipeit_host}/api/v1/hardware/bytag/'
     headers = {'authorization': token}
     r = requests.get(url + tag, headers = headers)
 
@@ -38,13 +38,10 @@ if "tag" in form:
         try:
             data = r.json()
             device_id = str(data['id'])
-            print ('Location: ' + snipeit_host + '/hardware/' + device_id + '\n')
+            print(f'Location: {snipeit_host}/hardware/{device_id}' + '\n')
         except:
-            print ('Location: ' + snipeit_host + '/hardware/' + '\n')
+            print(f'Location: {snipeit_host}/hardware/' + '\n')
     else:
-        print ('Location: ' + snipeit_host +'\n')
-#
-# handle all other errors by just forwarding to the Snipe-IT host
-#
+        print(f'Location: {snipeit_host}' + '\n')
 else:
-    print ('Location: ' + snipeit_host +'\n')
+    print(f'Location: {snipeit_host}' + '\n')
