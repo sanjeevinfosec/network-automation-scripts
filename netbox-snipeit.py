@@ -23,7 +23,7 @@ form = cgi.FieldStorage()
 #
 if "device" in form:
     device = form.getvalue('device')
-    url = snipeit_host + '/api/v1/hardware?limit=1&offset=0&search='
+    url = f'{snipeit_host}/api/v1/hardware?limit=1&offset=0&search='
     headers = {'authorization': token}
     r = requests.get(url + device, headers = headers)
 
@@ -38,17 +38,14 @@ if "device" in form:
         try:
             data = r.json()
             device_id = str(data['rows'][0]['id'])
-            print ('Location: ' + snipeit_host + '/hardware/' + device_id + '\n')
+            print(f'Location: {snipeit_host}/hardware/{device_id}' + '\n')
         except IndexError:
-            print ('Location: ' + snipeit_host + '/hardware/' + '\n')
+            print(f'Location: {snipeit_host}/hardware/' + '\n')
     else:
-        print ('Location: ' + snipeit_host +'\n')
-#
-# handle locations
-#
+        print(f'Location: {snipeit_host}' + '\n')
 elif "location" in form:
     location = form.getvalue('location')
-    url = snipeit_host + '/api/v1/locations?limit=1&offset=0&search='
+    url = f'{snipeit_host}/api/v1/locations?limit=1&offset=0&search='
     headers = {'authorization': token}
     r = requests.get(url + location, headers = headers)
 
@@ -63,13 +60,10 @@ elif "location" in form:
         try:
             data = r.json()
             location_id = str(data['rows'][0]['id'])
-            print ('Location: ' + snipeit_host + '/locations/' + location_id + '\n')
+            print(f'Location: {snipeit_host}/locations/{location_id}' + '\n')
         except IndexError:
-            print ('Location: ' + snipeit_host + '/locations/' +'\n')
+            print(f'Location: {snipeit_host}/locations/' + '\n')
     else:
-        print ('Location: ' + snipeit_host +'\n')
-#
-# handle all other errors by just forwarding to the Snipe-IT host
-#
+        print(f'Location: {snipeit_host}' + '\n')
 else:
-    print ('Location: ' + snipeit_host +'\n')
+    print(f'Location: {snipeit_host}' + '\n')

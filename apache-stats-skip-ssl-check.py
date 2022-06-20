@@ -34,28 +34,24 @@ cachefile = "/var/cache/librenms/apache-snmp"
 # Check for a cache file newer than cachetime seconds ago
 
 if os.path.isfile(cachefile) and (time.time() - os.stat(cachefile)[8]) < cachetime:
-    # Use cached data
-    f = open(cachefile, "r")
-    data = f.read()
-    f.close()
+    with open(cachefile, "r") as f:
+        data = f.read()
 else:
     # Set parameters to skip SSL checks
     # for localhost + self-signed cert
     context = ssl.create_default_context()
     context.check_hostname = False
     context.verify_mode = ssl.CERT_NONE
-    
+
     # Grab the status URL (fresh data), needs package urllib3
     data = (
         urllib.request.urlopen("http://localhost/server-status?auto", context=context)
         .read()
         .decode("UTF-8")
     )
-    # Write file
-    f = open(cachefile + ".TMP." + str(os.getpid()), "w")
-    f.write(data)
-    f.close()
-    os.rename(cachefile + ".TMP." + str(os.getpid()), cachefile)
+    with open(f"{cachefile}.TMP.{str(os.getpid())}", "w") as f:
+        f.write(data)
+    os.rename(f"{cachefile}.TMP.{str(os.getpid())}", cachefile)
 
 
 # dice up the data
@@ -67,15 +63,13 @@ for line in data.splitlines():
         continue  # "localhost" as first line causes out of index error
     elif fields[0] == "Scoreboard":
         # count up the scoreboard into states
-        states = {}
-        for state in scoreboardkey:
-            states[state] = 0
+        states = {state: 0 for state in scoreboardkey}
         for state in fields[1]:
             states[state] += 1
     elif fields[0] == "Total kBytes":
         # turn into base(byte) value
         params[fields[0]] = int(fields[1]) * 1024
-    elif len(fields) > 1:
+    else:
         # just store everything else
         params[fields[0]] = fields[1]
 
